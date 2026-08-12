@@ -1,0 +1,105 @@
+{
+  "targets": [
+    {
+      "name": "DeepWiki",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "GitHub repo docs/code context — good first test target"
+    },
+    {
+      "name": "Semgrep",
+      "url": "https://mcp.semgrep.ai/sse",
+      "transport": "sse",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "Security scanner MCP server — SSE transport, not Streamable HTTP"
+    },
+    {
+      "name": "GitMCP (example: modelcontextprotocol/python-sdk)",
+      "url": "https://gitmcp.io/modelcontextprotocol/python-sdk",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "Dynamic per-repo — swap the owner/repo path for any public GitHub repo"
+    },
+    {
+      "name": "Chainflip Broker",
+      "url": "https://chainflip-broker.io/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "finance-crypto",
+      "notes": "Handles crypto swaps — a financial-transaction server is a meaningful security test case"
+    },
+    {
+      "name": "402.bot Discovery Oracle",
+      "url": "https://api.402.bot/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "Read-only public surface"
+    },
+    {
+      "name": "WZRD Velocity Oracle",
+      "url": "https://app.twzrd.xyz/api/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "finance-crypto",
+      "notes": "Includes wallet summaries and market tooling — another finance-adjacent test case"
+    },
+    {
+      "name": "SpaceMolt",
+      "url": "https://game.spacemolt.com/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "gaming",
+      "notes": "Multiplayer game server — unusual tool surface, good edge-case test"
+    },
+    {
+      "name": "Webflow MCP",
+      "url": "https://mcp.webflow.com/",
+      "transport": "streamable-http",
+      "requires_auth": true,
+      "auth_type": "oauth",
+      "category": "developer-tools",
+      "notes": "OAuth required — not yet supported, skipped automatically"
+    },
+    {
+      "name": "Apify Actors MCP",
+      "url": "https://mcp.apify.com",
+      "transport": "streamable-http",
+      "requires_auth": true,
+      "auth_env_var": "APIFY_TOKEN",
+      "category": "search-data",
+      "notes": "Bearer token — get from Apify Console Integrations"
+    },
+    {
+      "name": "Tally MCP",
+      "url": "https://api.tally.so/mcp",
+      "transport": "streamable-http",
+      "requires_auth": true,
+      "auth_env_var": "TALLY_API_KEY",
+      "category": "marketing-crm",
+      "notes": "Bearer token — get from Tally account settings"
+    },
+    {
+      "name": "Asana MCP",
+      "url": "https://mcp.asana.com/sse",
+      "transport": "sse",
+      "requires_auth": true,
+      "auth_type": "oauth",
+      "category": "communication",
+      "notes": "OAuth required — not yet supported, skipped automatically"
+    },
+    {
+      "name": "Egnyte MCP",
+      "url": "https://mcp-server.egnyte.com/sse",
+      "transport": "sse",
+      "requires_auth": true,
+      "auth_type": "oauth",
+      "category": "databases-storage",
+      "notes": "OAuth required — not yet supported, skipped automatically"
+    }
+  ]
+}
