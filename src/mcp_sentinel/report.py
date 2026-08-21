@@ -101,9 +101,11 @@ def generate_markdown_report(results: list[dict], output_path: str = "scan_repor
             lines.append("\n**Findings:**")
             for issue in issues:
                 tool_ref = f" (`{issue['tool']}`)" if issue.get("tool") else ""
-                lines.append(
-                    f"- **[{issue['severity'].upper()}]** {issue['rule']}{tool_ref} — {issue['detail']}"
-                )
+                line = f"- **[{issue['severity'].upper()}]** {issue['rule']}{tool_ref} — {issue['detail']}"
+                verdict = issue.get("ai_verdict")
+                if verdict:
+                    line += f"\n  - *AI review: **{verdict['verdict']}** — {verdict['reasoning']}*"
+                lines.append(line)
 
     report_text = "\n".join(lines)
     with open(output_path, "w", encoding="utf-8") as f:

@@ -40,28 +40,41 @@ def _get_reference_embeddings():
     return _reference_embeddings
 
 
-def check_semantic_similarity(tool: dict) -> dict | None:
-    """Flags descriptions semantically close to known attack patterns,
-    even when worded completely differently from rules.py's literal list."""
-    desc = tool.get("description")
-    if not desc or not desc.strip():
-        return None
+def batch_check_semantic_similarity(tools: list[dict]) -> dict[str, dict]:
+    """Encodes ALL tool descriptions for a server in a single batched call,
+    instead of one model.encode() per tool. Returns a dict mapping tool
+    name -> issue dict, only for tools that actually triggered a match."""
+    named_descs = [
+        (t.get("name"), t.get("description"))
+        for t in tools
+        if t.get("description") and t["description"].strip()
+    ]
+    if not named_descs:
+        return {}
+
+    names = [n for n, _ in named_descs]
+    descriptions = [d for _, d in named_descs]
 
     model = _get_model()
-    tool_embedding = model.encode(desc, convert_to_tensor=True)
+    # Single batched encode call for every description at once — this is
+    # the actual speed win, versus calling .encode() in a per-tool loop.
+    tool_embeddings = model.encode(descriptions, convert_to_tensor=True)
     ref_embeddings = _get_reference_embeddings()
 
-    scores = util.cos_sim(tool_embedding, ref_embeddings)[0]
-    best_score = float(scores.max())
-    best_match = ATTACK_REFERENCE_PHRASES[int(scores.argmax())]
+    scores_matrix = util.cos_sim(tool_embeddings, ref_embeddings)
 
-    if best_score >= SIMILARITY_THRESHOLD:
-        return {
-            "rule": "semantic_similarity",
-            "severity": "high",
-            "scope": "tool",
-            "tool": tool.get("name"),
-            "detail": f"Description is semantically similar (score={best_score:.2f}) "
-                      f"to a known attack pattern: '{best_match}'.",
-        }
-    return None
+    results: dict[str, dict] = {}
+    for i, name in enumerate(names):
+        scores = scores_matrix[i]
+        best_score = float(scores.max())
+        if best_score >= SIMILARITY_THRESHOLD:
+            best_match = ATTACK_REFERENCE_PHRASES[int(scores.argmax())]
+            results[name] = {
+                "rule": "semantic_similarity",
+                "severity": "high",
+                "scope": "tool",
+                "tool": name,
+                "detail": f"Description is semantically similar (score={best_score:.2f}) "
+                          f"to a known attack pattern: '{best_match}'.",
+            }
+    return results

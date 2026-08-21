@@ -4,7 +4,7 @@ Each rule takes either a server-level `findings` dict or an individual
 `tool` dict (as produced by scanner.py) and returns an issue dict if it
 fires, or None if the check passes clean.
 """
-from .semantic import check_semantic_similarity 
+from .semantic import batch_check_semantic_similarity
 
 # Verbs that suggest a tool can take destructive or high-privilege action.
 # Presence alone isn't proof of danger — it's a signal worth a human look.
@@ -102,8 +102,6 @@ def check_suspicious_description(tool: dict) -> dict | None:
         if required_context is None:
             hit = phrase
         else:
-            # Only fire if one of the context words appears within roughly
-            # the same sentence/vicinity as the trigger phrase.
             idx = desc.find(phrase)
             window = desc[max(0, idx - 80): idx + 80]
             if not any(ctx in window for ctx in required_context):
@@ -135,7 +133,6 @@ def check_missing_description(tool: dict) -> dict | None:
     return None
 
 
-
 def check_unconstrained_schema(tool: dict) -> dict | None:
     """Flags tools whose input schema allows unconstrained strings in
     parameters where that's a genuine injection/traversal risk — not
@@ -165,13 +162,15 @@ def check_unconstrained_schema(tool: dict) -> dict | None:
 
 # ---------- Rule runner ----------
 
+# Semantic similarity is intentionally NOT in this tuple — it now runs once
+# per server as a single batched call in evaluate() below, not once per
+# tool inside the per-tool loop.
 SERVER_RULES = (check_missing_auth, check_insecure_transport)
 TOOL_RULES = (
     check_broad_scope,
     check_suspicious_description,
     check_missing_description,
     check_unconstrained_schema,
-    check_semantic_similarity,
 )
 
 
@@ -185,10 +184,17 @@ def evaluate(target: dict, findings: dict) -> list[dict]:
         if result:
             issues.append(result)
 
-    for tool in findings.get("tools", []):
+    tools = findings.get("tools", [])
+
+    for tool in tools:
         for rule in TOOL_RULES:
             result = rule(tool)
             if result:
                 issues.append(result)
+
+    # Batched semantic check — one embedding call for the whole server's
+    # tool list, not one call per tool.
+    semantic_hits = batch_check_semantic_similarity(tools)
+    issues.extend(semantic_hits.values())
 
     return issues

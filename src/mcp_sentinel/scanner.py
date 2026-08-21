@@ -3,12 +3,17 @@ import json
 import os
 import sys
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import httpx2
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 from mcp.client.sse import sse_client
+
 from . import report
 from . import rules
+from . import ai_review
 
 # Each individual server scan is capped at this many seconds, so one slow or
 # hanging server can't stall the whole batch scan indefinitely.
@@ -16,6 +21,17 @@ PER_TARGET_TIMEOUT = 30
 
 RETRY_ATTEMPTS = 3
 RETRY_BACKOFF_SECONDS = 2
+
+# How many servers get scanned at once. Capped rather than unbounded — high
+# concurrency can worsen DNS flakiness seen on some targets and risks
+# tripping rate limits on the servers themselves.
+MAX_CONCURRENT_SCANS = 8
+
+# Separate, tighter limit specifically for AI review calls. The free-tier
+# Gemini quota (roughly 10-15 requests/minute) is far more restrictive than
+# our own scan concurrency, so this needs its own smaller cap independent
+# of MAX_CONCURRENT_SCANS above.
+MAX_CONCURRENT_AI_REVIEWS = 3
 
 
 def _flatten_exceptions(exc) -> list[Exception]:
@@ -136,13 +152,34 @@ async def scan_all(targets_path: str = "targets.json") -> list[dict]:
         print(f"Error: '{targets_path}' contains invalid JSON — {e}")
         return []
 
-    results = []
-    for target in data.get("targets", []):
-        print(f"Scanning {target.get('name', 'Unnamed target')}...")
-        result = await scan_server(target)
-        result["issues"] = rules.evaluate(target, result)
-        results.append(result)
-    return results
+    targets = data.get("targets", [])
+    scan_semaphore = asyncio.Semaphore(MAX_CONCURRENT_SCANS)
+    ai_semaphore = asyncio.Semaphore(MAX_CONCURRENT_AI_REVIEWS)
+
+    async def scan_one(target: dict) -> dict:
+        async with scan_semaphore:
+            print(f"Scanning {target.get('name', 'Unnamed target')}...")
+            result = await scan_server(target)
+            result["issues"] = rules.evaluate(target, result)
+
+            # Second-opinion AI review for high-confidence findings only.
+            # Runs under its own, smaller semaphore since free-tier LLM
+            # rate limits are much tighter than our scan concurrency.
+            for issue in result["issues"]:
+                if issue["severity"] in ("critical", "high") and issue.get("tool"):
+                    matching_tool = next(
+                        (t for t in result["tools"] if t["name"] == issue["tool"]), None
+                    )
+                    if matching_tool:
+                        async with ai_semaphore:
+                            verdict = await ai_review.review_flag(matching_tool, issue)
+                        if verdict:
+                            issue["ai_verdict"] = verdict
+
+            return result
+
+    results = await asyncio.gather(*(scan_one(t) for t in targets))
+    return list(results)
 
 
 if __name__ == "__main__":
