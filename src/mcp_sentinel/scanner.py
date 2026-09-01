@@ -110,6 +110,7 @@ async def _connect_and_collect(
         http_client = httpx2.AsyncClient(
             headers=headers,
             timeout=httpx2.Timeout(30.0, read=300.0),
+            follow_redirects=True,
         )
         async with streamable_http_client(url, http_client=http_client) as (read, write):
             async with ClientSession(read, write) as session:

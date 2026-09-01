@@ -1,105 +1,236 @@
 {
   "targets": [
     {
-      "name": "DeepWiki",
+      "name": "DeepWiki MCP",
       "url": "https://mcp.deepwiki.com/mcp",
+      "transport": "steamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via PulseMCP listing and official documentation"
+    },
+    {
+      "name": "GitMCP Docs",
+      "url": "https://gitmcp.io/docs",
       "transport": "streamable-http",
       "requires_auth": false,
       "category": "developer-tools",
-      "notes": "GitHub repo docs/code context — good first test target"
+      "notes": "verified via official documentation and awesome-remote-mcp-servers"
     },
     {
-      "name": "Semgrep",
-      "url": "https://mcp.semgrep.ai/sse",
-      "transport": "sse",
-      "requires_auth": false,
-      "category": "developer-tools",
-      "notes": "Security scanner MCP server — SSE transport, not Streamable HTTP"
-    },
-    {
-      "name": "GitMCP (example: modelcontextprotocol/python-sdk)",
-      "url": "https://gitmcp.io/modelcontextprotocol/python-sdk",
-      "transport": "streamable-http",
-      "requires_auth": false,
-      "category": "developer-tools",
-      "notes": "Dynamic per-repo — swap the owner/repo path for any public GitHub repo"
-    },
-    {
-      "name": "Chainflip Broker",
-      "url": "https://chainflip-broker.io/mcp",
-      "transport": "streamable-http",
-      "requires_auth": false,
-      "category": "finance-crypto",
-      "notes": "Handles crypto swaps — a financial-transaction server is a meaningful security test case"
-    },
-    {
-      "name": "402.bot Discovery Oracle",
+      "name": "402.bot MCP",
       "url": "https://api.402.bot/mcp",
       "transport": "streamable-http",
       "requires_auth": false,
-      "category": "search-data",
-      "notes": "Read-only public surface"
+      "category": "finance-crypto",
+      "notes": "verified via awesome-remote-mcp-servers directory listing"
     },
     {
-      "name": "WZRD Velocity Oracle",
-      "url": "https://app.twzrd.xyz/api/mcp",
+      "name": "BGPT Science MCP",
+      "url": "https://mcp.bgpt.pro/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via awesome-remote-mcp-servers directory listing"
+    },
+    {
+      "name": "Find-A-Domain MCP",
+      "url": "https://api.findadomain.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "productivity",
+      "notes": "verified via jaw9c directory listing"
+    },
+    {
+      "name": "Peek.com MCP",
+      "url": "https://mcp.peek.com",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "travel-events",
+      "notes": "verified via awesome-remote-mcp-servers directory listing"
+    },
+    {
+      "name": "Context Awesome",
+      "url": "https://www.context-awesome.com/api/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via official registry listing"
+    },
+    {
+      "name": "Cloudflare Authless Remote Demo",
+      "url": "https://remote-mcp-server-authless.workers.dev/sse",
+      "transport": "sse",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via Cloudflare official documentation and mcpservers.org"
+    },
+    {
+      "name": "Cloudflare Docs MCP",
+      "url": "https://docs.mcp.cloudflare.com/sse",
+      "transport": "sse",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via jaw9c directory listing"
+    },
+    {
+      "name": "Resemble AI MCP",
+      "url": "https://mcp.resemble.ai/sse",
+      "transport": "sse",
+      "requires_auth": false,
+      "category": "media-audio",
+      "notes": "verified via awesome-remote-mcp-servers directory listing"
+    },
+    {
+      "name": "Remote MCP Directory Server",
+      "url": "https://mcp.remote-mcp.com",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via GitHub directory"
+    },
+    {
+      "name": "OpenMesh MCP",
+      "url": "https://api.openmesh.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via awesome-remote-mcp-servers directory listing"
+    },
+    {
+      "name": "JSON Toolkit MCP",
+      "url": "https://json-toolkit-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via Official MCP Registry and LobeHub"
+    },
+    {
+      "name": "Regex Engine MCP",
+      "url": "https://regex-engine-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via Official MCP Registry and LobeHub"
+    },
+    {
+      "name": "Color Palette MCP",
+      "url": "https://color-palette-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "design",
+      "notes": "verified via Official MCP Registry and LobeHub"
+    },
+    {
+      "name": "Timestamp Converter MCP",
+      "url": "https://timestamp-converter-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "utility",
+      "notes": "verified via Official MCP Registry and LobeHub"
+    },
+    {
+      "name": "Prompt Enhancer MCP",
+      "url": "https://prompt-enhancer-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "utility",
+      "notes": "verified via mcp.so and Official MCP Registry"
+    },
+    {
+      "name": "OpenClaw Intel MCP",
+      "url": "https://openclaw-intel-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via LobeHub and Official MCP Registry"
+    },
+    {
+      "name": "OpenClaw Fortune MCP",
+      "url": "https://openclaw-fortune-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "gaming",
+      "notes": "verified via LobeHub and Official MCP Registry"
+    },
+    {
+      "name": "MoltBook Publisher MCP",
+      "url": "https://moltbook-publisher-mcp.yagami8095.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "productivity",
+      "notes": "verified via Official MCP Registry"
+    },
+    {
+      "name": "FlowZap Docs MCP",
+      "url": "https://mcp.flowzap.xyz",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via PulseMCP listing and mcpservers.org"
+    },
+    {
+      "name": "Kiwi.com Flight Search MCP",
+      "url": "https://mcp.kiwi.com",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "travel-events",
+      "notes": "verified via Kiwi.com official documentation"
+    },
+    {
+      "name": "SiteSpeak Chatbot MCP",
+      "url": "https://chatbot.sitespeak.ai/api/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via SiteSpeak official documentation and PulseMCP"
+    },
+    {
+      "name": "Brimble Platform MCP",
+      "url": "https://mcp.brimble.io",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "developer-tools",
+      "notes": "verified via Brimble official documentation"
+    },
+    {
+      "name": "Cloudflare Weather MCP",
+      "url": "https://weather-mcp-server.superhighfives.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "utility",
+      "notes": "verified via Cloudflare Workers deployment guide"
+    },
+    {
+      "name": "Data.gouv.fr MCP",
+      "url": "https://mcp.data.gouv.fr/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "search-data",
+      "notes": "verified via Datagouv GitHub repository"
+    },
+    {
+      "name": "MCP Time Server",
+      "url": "https://mcp-time-server.workers.dev/mcp",
+      "transport": "streamable-http",
+      "requires_auth": false,
+      "category": "utility",
+      "notes": "verified via mcp.so directory listing"
+    },
+    {
+      "name": "BotSpot Trading MCP",
+      "url": "https://mcp.botspot.trade/mcp",
       "transport": "streamable-http",
       "requires_auth": false,
       "category": "finance-crypto",
-      "notes": "Includes wallet summaries and market tooling — another finance-adjacent test case"
+      "notes": "verified via awesome-remote-mcp-servers repository"
     },
     {
-      "name": "SpaceMolt",
+      "name": "SpaceMolt MCP",
       "url": "https://game.spacemolt.com/mcp",
       "transport": "streamable-http",
       "requires_auth": false,
       "category": "gaming",
-      "notes": "Multiplayer game server — unusual tool surface, good edge-case test"
-    },
-    {
-      "name": "Webflow MCP",
-      "url": "https://mcp.webflow.com/",
-      "transport": "streamable-http",
-      "requires_auth": true,
-      "auth_type": "oauth",
-      "category": "developer-tools",
-      "notes": "OAuth required — not yet supported, skipped automatically"
-    },
-    {
-      "name": "Apify Actors MCP",
-      "url": "https://mcp.apify.com",
-      "transport": "streamable-http",
-      "requires_auth": true,
-      "auth_env_var": "APIFY_TOKEN",
-      "category": "search-data",
-      "notes": "Bearer token — get from Apify Console Integrations"
-    },
-    {
-      "name": "Tally MCP",
-      "url": "https://api.tally.so/mcp",
-      "transport": "streamable-http",
-      "requires_auth": true,
-      "auth_env_var": "TALLY_API_KEY",
-      "category": "marketing-crm",
-      "notes": "Bearer token — get from Tally account settings"
-    },
-    {
-      "name": "Asana MCP",
-      "url": "https://mcp.asana.com/sse",
-      "transport": "sse",
-      "requires_auth": true,
-      "auth_type": "oauth",
-      "category": "communication",
-      "notes": "OAuth required — not yet supported, skipped automatically"
-    },
-    {
-      "name": "Egnyte MCP",
-      "url": "https://mcp-server.egnyte.com/sse",
-      "transport": "sse",
-      "requires_auth": true,
-      "auth_type": "oauth",
-      "category": "databases-storage",
-      "notes": "OAuth required — not yet supported, skipped automatically"
+      "notes": "verified via awesome-remote-mcp-servers directory"
     }
   ]
 }
