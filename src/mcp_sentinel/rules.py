@@ -28,6 +28,7 @@ SUSPICIOUS_PATTERNS = (
     ("without confirming", None),
     ("without asking", None),
     ("silently", None),
+    ("silently send", None),
     ("do not mention", None),
     ("hide this from", None),
     ("system prompt", None),
@@ -91,6 +92,12 @@ def check_broad_scope(tool: dict) -> dict | None:
     return None
 
 
+def _name_or_description_has_risky_verb(tool: dict) -> str | None:
+    """Helper: check both name and description for risky verbs; return the matched verb."""
+    combined = ((tool.get("name") or "") + " " + (tool.get("description") or "")).lower()
+    return next((v for v in RISKY_VERBS if v in combined), None)
+
+
 def check_suspicious_description(tool: dict) -> dict | None:
     """Flags tool descriptions containing prompt-injection style phrasing —
     instructions aimed at manipulating the calling model, not the user."""
@@ -101,15 +108,21 @@ def check_suspicious_description(tool: dict) -> dict | None:
             continue
         if required_context is None:
             hit = phrase
+            idx = desc.find(phrase)
+            window = desc[max(0, idx - 80): idx + 80]
         else:
             idx = desc.find(phrase)
             window = desc[max(0, idx - 80): idx + 80]
             if not any(ctx in window for ctx in required_context):
                 continue
             hit = phrase
+        # Boost severity if a risky verb appears nearby
+        nearby = desc[max(0, idx - 80): idx + 80]
+        risky = any(v in nearby for v in RISKY_VERBS)
+        severity = "critical" if risky else "high"
         return {
             "rule": "suspicious_description",
-            "severity": "critical",
+            "severity": severity,
             "scope": "tool",
             "tool": tool.get("name"),
             "detail": f"Description contains manipulative phrasing: '{hit}'. "
@@ -160,6 +173,20 @@ def check_unconstrained_schema(tool: dict) -> dict | None:
     return None
 
 
+def check_description_risky_verbs(tool: dict) -> dict | None:
+    """Flags tools where description (or name) contains risky verbs even if name didn't match."""
+    hit = _name_or_description_has_risky_verb(tool)
+    if hit:
+        return {
+            "rule": "risky_verb_in_description",
+            "severity": "high",
+            "scope": "tool",
+            "tool": tool.get("name"),
+            "detail": f"Description or name contains verb '{hit}', indicating high-privilege actions.",
+        }
+    return None
+
+
 # ---------- Rule runner ----------
 
 # Semantic similarity is intentionally NOT in this tuple — it now runs once
@@ -172,6 +199,9 @@ TOOL_RULES = (
     check_missing_description,
     check_unconstrained_schema,
 )
+
+# Add newly-introduced check to the end of the tool rules to increase recall
+TOOL_RULES = TOOL_RULES + (check_description_risky_verbs,)
 
 
 def evaluate(target: dict, findings: dict) -> list[dict]:
@@ -193,8 +223,10 @@ def evaluate(target: dict, findings: dict) -> list[dict]:
                 issues.append(result)
 
     # Batched semantic check — one embedding call for the whole server's
-    # tool list, not one call per tool.
-    semantic_hits = batch_check_semantic_similarity(tools)
-    issues.extend(semantic_hits.values())
+    # tool list, not one call per tool. Can be disabled by setting
+    # `skip_semantic` on the target (useful for speed testing).
+    if not target.get("skip_semantic"):
+        semantic_hits = batch_check_semantic_similarity(tools)
+        issues.extend(semantic_hits.values())
 
     return issues

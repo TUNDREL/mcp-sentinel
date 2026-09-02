@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import sys
+import time
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -17,21 +18,74 @@ from . import ai_review
 
 # Each individual server scan is capped at this many seconds, so one slow or
 # hanging server can't stall the whole batch scan indefinitely.
-PER_TARGET_TIMEOUT = 30
+PER_TARGET_TIMEOUT = int(os.getenv("MCP_SENTINEL_PER_TARGET_TIMEOUT", "30"))
 
-RETRY_ATTEMPTS = 3
-RETRY_BACKOFF_SECONDS = 2
+RETRY_ATTEMPTS = int(os.getenv("MCP_SENTINEL_RETRY_ATTEMPTS", "3"))
+RETRY_BACKOFF_SECONDS = int(os.getenv("MCP_SENTINEL_RETRY_BACKOFF_SECONDS", "2"))
 
-# How many servers get scanned at once. Capped rather than unbounded — high
-# concurrency can worsen DNS flakiness seen on some targets and risks
-# tripping rate limits on the servers themselves.
-MAX_CONCURRENT_SCANS = 8
+# How many servers get scanned at once. Configurable via environment var to
+# allow experimentation with concurrency for speed tuning.
+MAX_CONCURRENT_SCANS = int(os.getenv("MCP_SENTINEL_MAX_CONCURRENT", "8"))
 
 # Separate, tighter limit specifically for AI review calls. The free-tier
-# Gemini quota (roughly 10-15 requests/minute) is far more restrictive than
-# our own scan concurrency, so this needs its own smaller cap independent
-# of MAX_CONCURRENT_SCANS above.
-MAX_CONCURRENT_AI_REVIEWS = 3
+# Gemini quota is far more restrictive than our own scan concurrency, so
+# this needs its own smaller cap independent of MAX_CONCURRENT_SCANS above.
+MAX_CONCURRENT_AI_REVIEWS = int(os.getenv("MCP_SENTINEL_MAX_AI_REVIEWS", "3"))
+
+
+# Simple in-memory cache for OAuth tokens: {(token_url, client_id): (token, expiry)}
+OAUTH_TOKEN_CACHE: dict = {}
+
+
+async def _fetch_client_credentials_token(token_url: str, client_id: str, client_secret: str, scope: str | None = None) -> tuple[str, float]:
+    async with httpx2.AsyncClient(timeout=10.0) as c:
+        data = {"grant_type": "client_credentials"}
+        if scope:
+            data["scope"] = scope
+        resp = await c.post(token_url, data=data, auth=(client_id, client_secret))
+        resp.raise_for_status()
+        j = resp.json()
+        token = j.get("access_token")
+        expires = j.get("expires_in", 3600)
+        return token, time.time() + int(expires) - 60
+
+
+async def _get_oauth_headers(target: dict) -> dict | None:
+    """Obtain OAuth bearer token for a target.
+
+    Supports pre-provisioned token via `oauth_token_env_var` (or legacy
+    `auth_env_var`) or the client_credentials flow using
+    `oauth_token_url`, `oauth_client_id_env`, and `oauth_client_secret_env`.
+    """
+    token_env = target.get("oauth_token_env_var") or target.get("auth_env_var")
+    if token_env:
+        token = os.getenv(token_env)
+        if token:
+            return {"Authorization": f"Bearer {token}"}
+
+    token_url = target.get("oauth_token_url")
+    client_id_env = target.get("oauth_client_id_env")
+    client_secret_env = target.get("oauth_client_secret_env")
+    scope = target.get("oauth_scope")
+
+    if token_url and client_id_env and client_secret_env:
+        client_id = os.getenv(client_id_env)
+        client_secret = os.getenv(client_secret_env)
+        if not client_id or not client_secret:
+            raise RuntimeError("OAuth client id/secret env vars not set")
+
+        cache_key = (token_url, client_id)
+        cached = OAUTH_TOKEN_CACHE.get(cache_key)
+        if cached and cached[1] > time.time():
+            return {"Authorization": f"Bearer {cached[0]}"}
+
+        token, expiry = await _fetch_client_credentials_token(token_url, client_id, client_secret, scope)
+        if not token:
+            raise RuntimeError("OAuth token response missing access_token")
+        OAUTH_TOKEN_CACHE[cache_key] = (token, expiry)
+        return {"Authorization": f"Bearer {token}"}
+
+    raise RuntimeError("OAuth configuration incomplete")
 
 
 def _flatten_exceptions(exc) -> list[Exception]:
@@ -51,26 +105,43 @@ async def scan_server(target: dict) -> dict:
     url = target.get("url")
     findings = {"name": name, "url": url, "tools": [], "errors": []}
 
+    headers = None
+
     if not url:
         findings["errors"].append("Target is missing a 'url' field — skipping")
         return findings
 
-    if target.get("auth_type") == "oauth":
-        findings["errors"].append("OAuth not yet supported — skipping")
-        return findings
+    # Normalize transport aliases (typos or slightly different names from registries)
+    transport_aliases = {
+        "steamable-http": "streamable-http",
+        "streamable_http": "streamable-http",
+        "sse": "sse",
+    }
 
-    headers = None
-    if target.get("requires_auth"):
-        env_var = target.get("auth_env_var")
-        token = os.getenv(env_var) if env_var else None
-        if not token:
-            findings["errors"].append(
-                f"requires_auth is true but no token found in env var '{env_var}'"
-            )
-            return findings
-        headers = {"Authorization": f"Bearer {token}"}
+    if target.get("auth_type") == "oauth":
+        # Attempt to obtain OAuth headers; errors are recorded but scanning
+        # continues where possible so we can still collect metadata.
+        try:
+            headers = await _get_oauth_headers(target)
+        except Exception as e:
+            findings["errors"].append(f"OAuth setup failed: {e}")
+            # Continue without headers to allow public endpoints to be scanned
+            headers = None
+
+    if not headers:
+        headers = None
+        if target.get("requires_auth"):
+            env_var = target.get("auth_env_var")
+            token = os.getenv(env_var) if env_var else None
+            if not token:
+                findings["errors"].append(
+                    f"requires_auth is true but no token found in env var '{env_var}'"
+                )
+                return findings
+            headers = {"Authorization": f"Bearer {token}"}
 
     transport_type = target.get("transport", "streamable-http")
+    transport_type = transport_aliases.get(transport_type, transport_type)
 
     last_errors: list[str] = []
     for attempt in range(1, RETRY_ATTEMPTS + 1):
@@ -107,23 +178,26 @@ async def _connect_and_collect(
 ) -> None:
     """Open the appropriate transport, start a session, and collect tools."""
     if transport_type == "streamable-http":
-        http_client = httpx2.AsyncClient(
-            headers=headers,
-            timeout=httpx2.Timeout(30.0, read=300.0),
-            follow_redirects=True,
-        )
-        async with streamable_http_client(url, http_client=http_client) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                await _collect_tools(session, findings)
+        # Reuse an AsyncClient per call to avoid repeated connection setup
+        async with httpx2.AsyncClient(headers=headers, timeout=httpx2.Timeout(30.0, read=300.0), follow_redirects=True) as http_client:
+            async with streamable_http_client(url, http_client=http_client) as endpoints:
+                # endpoints may be a tuple/list of (read, write, ...) or an object.
+                if isinstance(endpoints, (tuple, list)):
+                    read, write = endpoints[0], endpoints[1]
+                else:
+                    read = getattr(endpoints, "read", endpoints)
+                    write = getattr(endpoints, "write", None)
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    await _collect_tools(session, findings)
 
     elif transport_type == "sse":
-        async with sse_client(
-            url,
-            headers=headers,
-            timeout=5.0,
-            sse_read_timeout=300.0,
-        ) as (read, write):
+        async with sse_client(url, headers=headers, timeout=5.0, sse_read_timeout=300.0) as endpoints:
+            if isinstance(endpoints, (tuple, list)):
+                read, write = endpoints[0], endpoints[1]
+            else:
+                read = getattr(endpoints, "read", endpoints)
+                write = getattr(endpoints, "write", None)
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 await _collect_tools(session, findings)
@@ -134,11 +208,16 @@ async def _connect_and_collect(
 
 async def _collect_tools(session: ClientSession, findings: dict) -> None:
     result = await session.list_tools()
-    for tool in result.tools:
+    tools_iter = getattr(result, "tools", result)
+    for tool in tools_iter:
+        # Tool objects from different MCP clients may have different shapes.
+        name = getattr(tool, "name", None) or tool.get("name") if isinstance(tool, dict) else None
+        description = getattr(tool, "description", None) or tool.get("description") if isinstance(tool, dict) else ""
+        input_schema = getattr(tool, "input_schema", None) or tool.get("input_schema") if isinstance(tool, dict) else {}
         findings["tools"].append({
-            "name": tool.name,
-            "description": tool.description,
-            "input_schema": tool.input_schema,
+            "name": name,
+            "description": description,
+            "input_schema": input_schema,
         })
 
 
