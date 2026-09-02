@@ -1,12 +1,10 @@
 def main() -> None:
-    print("Hello from mcp-sentinel!")
-
-
-def _package_main() -> None:
-    # kept minimal; scanner is the normal entrypoint
+    # Package entrypoint: delegate to the scanner's main() so the installed
+    # `mcp-sentinel` CLI runs the real scanner behavior.
     from . import scanner
-    scanner_main = getattr(scanner, '__main__', None)
-    if scanner_main and hasattr(scanner_main, 'main'):
-        scanner_main.main()
-    else:
+    if hasattr(scanner, "main") and callable(getattr(scanner, "main")):
         scanner.main()
+    else:
+        # Fallback: run scanner module as a script
+        import runpy
+        runpy.run_module("mcp_sentinel.scanner", run_name="__main__")

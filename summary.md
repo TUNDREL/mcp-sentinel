@@ -258,3 +258,33 @@ This file will record metrics and results after each optimization iteration.
   }
 }``
 
+## 2026-09-02 05:53:08 UTC — Post-fix-run
+
+```{
+  "rules": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "eval_time_s": 8.629753699991852,
+    "issues_count": 7,
+    "low_medium_issues": 2
+  },
+  "semantic": {
+    "semantic_batch_time_s": 6.048088200041093,
+    "runner_stdout": "6.048088200041093"
+  },
+  "compatibility": {
+    "missing_deps": [],
+    "scanner_run": {
+      "returncode": 0,
+      "stdout": "Scanning DeepWiki MCP...\nScanning GitMCP Docs...\nScanning 402.bot MCP...\nScanning BGPT Science MCP...\nScanning Find-A-Domain MCP...\nScanning Peek.com MCP...\nScanning Context Awesome...\nScanning Cloudflare Authless Remote Demo...\nScanning Cloudflare Docs MCP...\nScanning Resemble AI MCP...\nScanning Remote MCP Directory Server...\nScanning OpenMesh MCP...\nScanning FlowZap Docs MCP...\nScanning Kiwi.com Flight Search MCP...\nScanning SiteSpeak Chatbot MCP...\nScanning Brimble Platform MCP...\nScanning Cloudflare Weather MCP...\nScanning Data.gouv.fr MCP...\nScanning MCP Time Server...\nScanning BotSpot Trading MCP...\nScanning SpaceMolt MCP...\n\n--- Scan Summary ---\n                          MCP Sentinel \u2014 Scan Summary                          \n+-----------------------------------------------------------------------------+\n| Server                         | Status | Tools | Issues | Highest Severity |\n|--------------------------------+--------+-------+--------+------------------|\n| DeepWiki MCP                   | OK     |     3 |      4 | MEDIUM           |\n| GitMCP Docs                    | OK     |     5 |      6 | MEDIUM           |\n| 402.bot MCP                    | FAILED |     0 |      1 | MEDIUM           |\n| BGPT Science MCP               | FAILED |     0 |      1 | MEDIUM           |\n| Find-A-Domain MCP              | OK     |     2 |      3 | MEDIUM           |\n| Peek.com MCP                   | OK     |     6 |      7 | MEDIUM           |\n| Context Awesome                | OK     |     2 |      3 | MEDIUM           |\n| Cloudflare Authless Remote     | FAILED |     0 |      1 | MEDIUM           |\n| Demo                           |        |       |        |                  |\n| Cloudflare Docs MCP            | FAILED |     0 |      1 | MEDIUM           |\n| Resemble AI MCP                | OK     |     6 |      7 | MEDIUM           |\n| Remote MCP Directory Server    | OK     |     1 |      2 | MEDIUM           |\n| OpenMesh MCP                   | FAILED |     0 |      1 | MEDIUM           |\n| FlowZap Docs MCP               | FAILED |     0 |      1 | MEDIUM           |\n| Kiwi.com Flight Search MCP     | OK     |     2 |      3 | MEDIUM           |\n| SiteSpeak Chatbot MCP          | FAILED |     0 |      1 | MEDIUM           |\n| Brimble Platform MCP           | FAILED |     0 |      1 | MEDIUM           |\n| Cloudflare Weather MCP         | OK     |     2 |      3 | MEDIUM           |\n| Data.gouv.fr MCP               | OK     |    10 |     11 | MEDIUM           |\n| MCP Time Server                | FAILED |     0 |      1 | MEDIUM           |\n| BotSpot Trading MCP            | FAILED |     0 |      1 | MEDIUM           |\n| SpaceMolt MCP                  | OK     |   219 |    220 | MEDIUM           |\n+-----------------------------------------------------------------------------+\n\nFull report written to: scan_report.md\n",
+      "stderr": "",
+      "run_time_s": 37.664092499995604,
+      "scan_report_exists": true
+    }
+  }
+}``
+

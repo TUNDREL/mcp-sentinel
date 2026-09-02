@@ -1,11 +1,11 @@
 # MCP Sentinel — Security Audit Report
-*Generated 2026-09-01 16:28 UTC*
+*Generated 2026-09-02 06:10 UTC*
 
 ## Summary
-- **Servers scanned:** 29
+- **Servers scanned:** 21
 - **Successfully connected:** 11
 - **Total tools analyzed:** 258
-- **Findings:** 0 critical, 0 high, 29 medium, 258 low
+- **Findings:** 0 critical, 0 high, 21 medium, 258 low
 
 ## Server Details
 
@@ -124,62 +124,6 @@ URL: `https://api.openmesh.dev/mcp`
 
 **Status: Failed to connect**
 - ConnectError: [Errno 11001] getaddrinfo failed
-- (failed after 3 attempts)
-
-### JSON Toolkit MCP
-URL: `https://json-toolkit-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### Regex Engine MCP
-URL: `https://regex-engine-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### Color Palette MCP
-URL: `https://color-palette-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### Timestamp Converter MCP
-URL: `https://timestamp-converter-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### Prompt Enhancer MCP
-URL: `https://prompt-enhancer-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### OpenClaw Intel MCP
-URL: `https://openclaw-intel-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### OpenClaw Fortune MCP
-URL: `https://openclaw-fortune-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
-- (failed after 3 attempts)
-
-### MoltBook Publisher MCP
-URL: `https://moltbook-publisher-mcp.yagami8095.workers.dev/mcp`
-
-**Status: Failed to connect**
-- MCPError: Not Found
 - (failed after 3 attempts)
 
 ### FlowZap Docs MCP

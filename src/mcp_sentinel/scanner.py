@@ -262,16 +262,19 @@ async def scan_all(targets_path: str = "targets.json") -> list[dict]:
     return list(results)
 
 
-if __name__ == "__main__":
+def main() -> None:
     # Python 3.14 deprecated the global event-loop-policy system in favor of
     # passing loop_factory directly to asyncio.run(). On Windows, the default
     # Proactor loop has shown DNS-resolution issues with httpx2's async
     # resolver — SelectorEventLoop avoids that. Unix/macOS are unaffected.
     loop_factory = asyncio.SelectorEventLoop if sys.platform == "win32" else None
-
     all_results = asyncio.run(scan_all(), loop_factory=loop_factory)
 
     print("\n--- Scan Summary ---")
     report.print_summary_table(all_results)
     path = report.generate_markdown_report(all_results)
     print(f"\nFull report written to: {path}")
+
+
+if __name__ == "__main__":
+    main()

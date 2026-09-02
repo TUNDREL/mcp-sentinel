@@ -48,8 +48,21 @@ def evaluate_rules_accuracy():
     issues = rules.evaluate(server, findings)
     duration = time.perf_counter() - start
 
-    # Map tool -> flagged
-    flagged = {i.get("tool"): i for i in issues if i.get("scope") == "tool"}
+    # Map tool -> flagged, but only consider high/critical severity findings
+    # for the malicious-detection scoring. Low/medium rules are hygiene/quality
+    # signals (e.g. missing_description) and should not be counted as malice.
+    flagged = {
+        i.get("tool"): i
+        for i in issues
+        if i.get("scope") == "tool" and i.get("severity") in ("high", "critical")
+    }
+
+    # Also count low/medium issues separately so we don't lose that signal.
+    low_medium_count = sum(
+        1
+        for i in issues
+        if i.get("scope") == "tool" and i.get("severity") in ("low", "medium")
+    )
 
     tp = fp = fn = 0
     for t in tools:
@@ -75,6 +88,7 @@ def evaluate_rules_accuracy():
         "f1": f1,
         "eval_time_s": duration,
         "issues_count": len(issues),
+        "low_medium_issues": low_medium_count,
     }
 
 
