@@ -167,6 +167,15 @@
       "requires_auth": false,
       "category": "gaming",
       "notes": "verified via awesome-remote-mcp-servers directory"
-    }
+    },
+{"name": "AWS Knowledge MCP", "url": "https://knowledge-mcp.global.api.aws", "transport": "streamable-http", "requires_auth": false, "category": "developer-tools", "notes": "verified via jaw9c/awesome-remote-mcp-servers listing (Open auth) — NOT execution-tested"},
+{"name": "LiquiLens MCP", "url": "https://api.liquilens.in/mcp", "transport": "streamable-http", "requires_auth": false, "category": "finance-crypto", "notes": "verified via TensorBlock awesome-mcp-servers, explicit no-auth — NOT execution-tested"},
+{"name": "Seiche MCP", "url": "https://api.seiche.info/mcp", "transport": "streamable-http", "requires_auth": false, "category": "finance-crypto", "notes": "verified via TensorBlock awesome-mcp-servers, explicit keyless/no-auth — NOT execution-tested"},
+{"name": "Wealthville MCP", "url": "https://wealthville.net/mcp", "transport": "streamable-http", "requires_auth": false, "category": "finance-crypto", "notes": "verified via TensorBlock awesome-mcp-servers, explicit no-auth — NOT execution-tested"},
+{"name": "Most Recommended Books MCP", "url": "https://mostrecommendedbooks.com/api/mcp", "transport": "streamable-http", "requires_auth": false, "category": "search-data", "notes": "verified via TensorBlock awesome-mcp-servers, explicit no-auth — NOT execution-tested"},
+{"name": "X Docs MCP", "url": "https://docs.x.com/mcp", "transport": "streamable-http", "requires_auth": false, "category": "developer-tools", "notes": "verified via mcpplaygroundonline catalog, explicit no-auth — NOT execution-tested"},
+{"name": "MCP Playground Complex Schema", "url": "https://mcpplaygroundonline.com/mcp-complex-server", "transport": "streamable-http", "requires_auth": false, "category": "developer-tools", "notes": "maintained mock/test server built to stay reliable, explicit no-auth, 4 tools — NOT execution-tested"},
+{"name": "MCP Playground Apps Server", "url": "https://mcpplaygroundonline.com/mcp-app-server", "transport": "streamable-http", "requires_auth": false, "category": "developer-tools", "notes": "maintained mock/test server, explicit no-auth — NOT execution-tested"},
+{"name": "MCP Playground Stateless Server", "url": "https://mcpplaygroundonline.com/mcp-stateless-server", "transport": "streamable-http", "requires_auth": false, "category": "developer-tools", "notes": "maintained mock/test server, explicit no-auth, 2026-07-28 spec — NOT execution-tested"}
   ]
 }

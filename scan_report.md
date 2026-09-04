@@ -1,11 +1,11 @@
 # MCP Sentinel — Security Audit Report
-*Generated 2026-09-02 06:10 UTC*
+*Generated 2026-09-04 10:52 UTC*
 
 ## Summary
-- **Servers scanned:** 21
-- **Successfully connected:** 11
-- **Total tools analyzed:** 258
-- **Findings:** 0 critical, 0 high, 21 medium, 258 low
+- **Servers scanned:** 30
+- **Successfully connected:** 20
+- **Total tools analyzed:** 314
+- **Findings:** 0 critical, 0 high, 30 medium, 314 low
 
 ## Server Details
 
@@ -37,7 +37,7 @@ URL: `https://gitmcp.io/docs`
 URL: `https://api.402.bot/mcp`
 
 **Status: Failed to connect**
-- ConnectError: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1077)
+- ConnectError: All connection attempts failed
 - (failed after 3 attempts)
 
 ### BGPT Science MCP
@@ -422,6 +422,134 @@ URL: `https://game.spacemolt.com/mcp`
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### AWS Knowledge MCP
+URL: `https://knowledge-mcp.global.api.aws`
+
+**Status: OK** — 5 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### LiquiLens MCP
+URL: `https://api.liquilens.in/mcp`
+
+**Status: OK** — 18 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### Seiche MCP
+URL: `https://api.seiche.info/mcp`
+
+**Status: OK** — 12 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### Wealthville MCP
+URL: `https://wealthville.net/mcp`
+
+**Status: OK** — 4 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### Most Recommended Books MCP
+URL: `https://mostrecommendedbooks.com/api/mcp`
+
+**Status: OK** — 6 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### X Docs MCP
+URL: `https://docs.x.com/mcp`
+
+**Status: OK** — 3 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### MCP Playground Complex Schema
+URL: `https://mcpplaygroundonline.com/mcp-complex-server`
+
+**Status: OK** — 4 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### MCP Playground Apps Server
+URL: `https://mcpplaygroundonline.com/mcp-app-server`
+
+**Status: OK** — 1 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+
+### MCP Playground Stateless Server
+URL: `https://mcpplaygroundonline.com/mcp-stateless-server`
+
+**Status: OK** — 3 tools found
+
+**Findings:**
+- **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.

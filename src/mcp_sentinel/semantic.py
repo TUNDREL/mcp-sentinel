@@ -58,8 +58,7 @@ def batch_check_semantic_similarity(tools: list[dict]) -> dict[str, dict]:
         return {}
 
     names = [n for n, _ in named_descs]
-    descriptions = [d for _, d in named_descs]
-
+    descriptions: list[str] = [str(d) for _, d in named_descs]
     model = _get_model()
     # Attempt to use an on-disk cache for tool embeddings when configured.
     cache_dir = os.getenv("MCP_SENTINEL_EMBED_CACHE_DIR")
