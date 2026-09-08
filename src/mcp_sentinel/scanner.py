@@ -15,6 +15,7 @@ from mcp.client.sse import sse_client
 from . import report
 from . import rules
 from . import ai_review
+from . import pinning
 
 # Each individual server scan is capped at this many seconds, so one slow or
 # hanging server can't stall the whole batch scan indefinitely.
@@ -241,6 +242,8 @@ async def scan_all(targets_path: str = "targets.json") -> list[dict]:
             print(f"Scanning {target.get('name', 'Unnamed target')}...")
             result = await scan_server(target)
             result["issues"] = rules.evaluate(target, result)
+            pin_issues = pinning.check_and_update_pins(target.get("name", "Unnamed target"), result["tools"])
+            result["issues"].extend(pin_issues)
 
             # Second-opinion AI review for high-confidence findings only.
             # Runs under its own, smaller semaphore since free-tier LLM
