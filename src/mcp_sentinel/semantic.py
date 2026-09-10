@@ -11,6 +11,7 @@ import hashlib
 from pathlib import Path
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
+import torch
 
 _model = None
 _reference_embeddings = None
@@ -50,28 +51,39 @@ def batch_check_semantic_similarity(tools: list[dict]) -> dict[str, dict]:
     instead of one model.encode() per tool. Returns a dict mapping tool
     name -> issue dict, only for tools that actually triggered a match."""
     named_descs = [
-        (t.get("name"), t.get("description"))
+        (t.get("name") or "unnamed-tool", t.get("description"))
         for t in tools
         if t.get("description") and t["description"].strip()
     ]
     if not named_descs:
         return {}
 
-    names = [n for n, _ in named_descs]
+    names: list[str] = [n for n, _ in named_descs]
     descriptions: list[str] = [str(d) for _, d in named_descs]
     model = _get_model()
+
     # Attempt to use an on-disk cache for tool embeddings when configured.
+    # np_path is resolved up front (None if caching is off) so both the
+    # read and write paths below reference the exact same variable —
+    # avoids the "possibly unbound" issue of computing it twice in two
+    # separate `if cache_dir:` blocks.
     cache_dir = os.getenv("MCP_SENTINEL_EMBED_CACHE_DIR")
-    tool_embeddings = None
+    np_path: Path | None = None
     if cache_dir:
         cache_path = Path(cache_dir)
         cache_path.mkdir(parents=True, exist_ok=True)
         digest = hashlib.sha256("\n".join(descriptions).encode("utf-8")).hexdigest()
         np_path = cache_path / f"{digest}.npy"
+
+    tool_embeddings = None
+    if np_path is not None:
         try:
             if np_path.exists():
                 arr = np.load(np_path)
-                tool_embeddings = util.tensor(arr)
+                # sentence-transformers embeddings are torch tensors — use
+                # torch.from_numpy to convert back, not util.tensor(),
+                # which doesn't exist on the util module at all.
+                tool_embeddings = torch.from_numpy(arr)
         except Exception:
             tool_embeddings = None
 
@@ -79,14 +91,18 @@ def batch_check_semantic_similarity(tools: list[dict]) -> dict[str, dict]:
         # Single batched encode call for every description at once — this is
         # the actual speed win, versus calling .encode() in a per-tool loop.
         tool_embeddings = model.encode(descriptions, convert_to_tensor=True)
-        if cache_dir:
+        if np_path is not None:
             try:
-                arr = np.asarray(tool_embeddings.cpu()) if hasattr(tool_embeddings, 'cpu') else np.asarray(tool_embeddings)
+                arr = (
+                    tool_embeddings.cpu().numpy()
+                    if hasattr(tool_embeddings, "cpu")
+                    else np.asarray(tool_embeddings)
+                )
                 np.save(np_path, arr)
             except Exception:
                 pass
-    ref_embeddings = _get_reference_embeddings()
 
+    ref_embeddings = _get_reference_embeddings()
     scores_matrix = util.cos_sim(tool_embeddings, ref_embeddings)
 
     results: dict[str, dict] = {}

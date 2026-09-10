@@ -1,11 +1,11 @@
 # MCP Sentinel — Security Audit Report
-*Generated 2026-09-04 10:52 UTC*
+*Generated 2026-09-10 00:34 UTC*
 
 ## Summary
 - **Servers scanned:** 30
 - **Successfully connected:** 20
-- **Total tools analyzed:** 314
-- **Findings:** 0 critical, 0 high, 30 medium, 314 low
+- **Total tools analyzed:** 321
+- **Findings:** 0 critical, 0 high, 30 medium, 321 low
 
 ## Server Details
 
@@ -202,10 +202,11 @@ URL: `https://mcp.botspot.trade/mcp`
 ### SpaceMolt MCP
 URL: `https://game.spacemolt.com/mcp`
 
-**Status: OK** — 219 tools found
+**Status: OK** — 220 tools found
 
 **Findings:**
 - **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
@@ -442,10 +443,14 @@ URL: `https://knowledge-mcp.global.api.aws`
 ### LiquiLens MCP
 URL: `https://api.liquilens.in/mcp`
 
-**Status: OK** — 18 tools found
+**Status: OK** — 22 tools found
 
 **Findings:**
 - **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
@@ -468,10 +473,12 @@ URL: `https://api.liquilens.in/mcp`
 ### Seiche MCP
 URL: `https://api.seiche.info/mcp`
 
-**Status: OK** — 12 tools found
+**Status: OK** — 14 tools found
 
 **Findings:**
 - **[MEDIUM]** missing_auth — Server accepts unauthenticated connections — anyone with the URL can invoke its tools.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
+- **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.
 - **[LOW]** missing_description — Tool has no description — behavior is undocumented.

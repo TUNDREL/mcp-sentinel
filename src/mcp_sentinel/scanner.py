@@ -141,7 +141,7 @@ async def scan_server(target: dict) -> dict:
                 return findings
             headers = {"Authorization": f"Bearer {token}"}
 
-    transport_type = target.get("transport", "streamable-http")
+    transport_type = target.get("transport") or "streamable-http"
     transport_type = transport_aliases.get(transport_type, transport_type)
 
     last_errors: list[str] = []
